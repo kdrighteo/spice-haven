@@ -6,7 +6,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { AdminProvider } from './context/AdminContext';
 import { ReviewsProvider } from './context/ReviewsContext';
-import { ProductProvider } from './context/ProductContext';
+import ProductProvider from './context/ProductContext';
 import { UserProfileProvider } from './context/UserProfileContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -14,6 +14,11 @@ import FeaturedSpices from './components/FeaturedSpices';
 import SearchAndFilter from './components/SearchAndFilter';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Dashboard from './components/Admin/Dashboard';
+import UserProfile from './components/UserProfile/UserProfile';
+import OrderHistory from './components/UserProfile/OrderHistory';
+import AddressBook from './components/UserProfile/AddressBook';
+import Wishlist from './components/Wishlist';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -44,23 +49,34 @@ const Home = () => (
 
 function App() {
   return (
-    <Router>
+    <Router basename="/spice-haven">
       <AuthProvider>
         <CartProvider>
           <ProductProvider>
             <ReviewsProvider>
               <AdminProvider>
-                <GlobalStyle />
-                <AppContainer>
-                  <Navbar />
-                  <Main>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                    </Routes>
-                  </Main>
-                </AppContainer>
+                <UserProfileProvider>
+                  <GlobalStyle />
+                  <AppContainer>
+                    <Navbar />
+                    <Main>
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        
+                        {/* Admin Routes */}
+                        <Route path="/admin/*" element={<Dashboard />} />
+                        
+                        {/* User Profile Routes */}
+                        <Route path="/profile" element={<UserProfile />} />
+                        <Route path="/profile/orders" element={<OrderHistory />} />
+                        <Route path="/profile/addresses" element={<AddressBook />} />
+                        <Route path="/wishlist" element={<Wishlist />} />
+                      </Routes>
+                    </Main>
+                  </AppContainer>
+                </UserProfileProvider>
               </AdminProvider>
             </ReviewsProvider>
           </ProductProvider>

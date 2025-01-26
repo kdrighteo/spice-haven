@@ -187,7 +187,7 @@ const CheckoutButton = styled.button`
 function Cart({ isOpen, onClose }) {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cartItems?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
 
   const handleQuantityChange = (item, change) => {
     const newQuantity = item.quantity + change;

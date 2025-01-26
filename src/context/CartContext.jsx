@@ -37,15 +37,15 @@ export function CartProvider({ children }) {
     );
   };
 
-  const cartTotal = cartItems.reduce(
+  const cartTotal = cartItems?.reduce(
     (total, item) => total + item.price * item.quantity,
     0
-  );
+  ) || 0;
 
-  const cartCount = cartItems.reduce(
+  const cartCount = cartItems?.reduce(
     (count, item) => count + item.quantity,
     0
-  );
+  ) || 0;
 
   return (
     <CartContext.Provider

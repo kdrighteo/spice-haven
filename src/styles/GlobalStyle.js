@@ -2,18 +2,15 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   :root {
-    --primary: #ff4757;
-    --primary-dark: #e0383f;
-    --dark: #2f3542;
-    --gray: #747d8c;
-    --light-gray: #e9ecef;
-    --light: #f8f9fa;
-    --success: #2ecc71;
-    --success-light: #d4edda;
-    --warning: #f1c40f;
-    --warning-light: #fff3cd;
-    --error: #e74c3c;
-    --error-light: #f8d7da;
+    --primary: #FF6B6B;
+    --primary-dark: #FF5252;
+    --secondary: #4ECDC4;
+    --dark: #2C3E50;
+    --gray: #95A5A6;
+    --light-gray: #ECF0F1;
+    --light: #F8F9FA;
+    --error: #E74C3C;
+    --success: #2ECC71;
   }
 
   * {
@@ -25,17 +22,21 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: var(--light);
+    line-height: 1.6;
     color: var(--dark);
-    line-height: 1.5;
   }
 
   button {
     font-family: inherit;
   }
 
-  input, select, textarea {
+  input, textarea {
     font-family: inherit;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 
   img {

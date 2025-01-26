@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../context/AuthContext';
 
-// Reuse styles from Login component
-const Container = styled.div`
+const Modal = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -16,79 +15,13 @@ const Container = styled.div`
   z-index: 2000;
 `;
 
-const RegisterPanel = styled.div`
+const Content = styled.div`
   background: white;
   padding: 2rem;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const Title = styled.h2`
-  text-align: center;
-  color: var(--dark);
-  margin-bottom: 1.5rem;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-weight: 500;
-  color: var(--dark);
-`;
-
-const Input = styled.input`
-  padding: 0.8rem;
-  border: 1px solid ${props => props.error ? 'var(--primary)' : '#ddd'};
-  border-radius: 4px;
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: var(--secondary);
-  }
-`;
-
-const ErrorMessage = styled.span`
-  color: var(--primary);
-  font-size: 0.8rem;
-`;
-
-const Button = styled.button`
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #ff5252;
-  }
-`;
-
-const ToggleText = styled.p`
-  text-align: center;
-  margin-top: 1rem;
-  color: var(--gray);
-
-  span {
-    color: var(--primary);
-    cursor: pointer;
-    font-weight: 500;
-  }
+  position: relative;
 `;
 
 const CloseButton = styled.button`
@@ -99,114 +32,149 @@ const CloseButton = styled.button`
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: var(--dark);
+  
+  &:hover {
+    color: var(--primary);
+  }
+`;
+
+const Title = styled.h2`
+  color: var(--dark);
+  margin-bottom: 1.5rem;
+  text-align: center;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Input = styled.input`
+  padding: 0.8rem;
+  border: 1px solid var(--light-gray);
+  border-radius: 4px;
+  font-size: 1rem;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+`;
+
+const Button = styled.button`
+  padding: 1rem;
+  background: var(--primary);
   color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: var(--primary-dark);
+  }
+`;
+
+const SwitchText = styled.p`
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--gray);
+  
+  button {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0 0.25rem;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: var(--error);
+  text-align: center;
+  margin-bottom: 1rem;
 `;
 
 function Register({ isOpen, onClose, onSwitchToLogin }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
   const { register } = useAuth();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [errors, setErrors] = useState({});
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      register(formData.name, formData.email, formData.password);
-      onClose();
-    }
-  };
+    setError('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      await register(name, email, password);
+      onClose();
+    } catch (err) {
+      setError('Registration failed. Please try again.');
     }
   };
 
   return (
-    <Container isOpen={isOpen}>
-      <CloseButton onClick={onClose}>&times;</CloseButton>
-      <RegisterPanel>
-        <Title>Create an Account</Title>
+    <Modal isOpen={isOpen} onClick={onClose}>
+      <Content onClick={e => e.stopPropagation()}>
+        <CloseButton onClick={onClose}>&times;</CloseButton>
+        <Title>Create Account</Title>
+        
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        
         <Form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Full Name</Label>
-            <Input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              error={errors.name}
-            />
-            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
-          </FormGroup>
-          <FormGroup>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={errors.email}
-            />
-            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-          </FormGroup>
-          <FormGroup>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-            />
-            {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-          </FormGroup>
-          <FormGroup>
-            <Label>Confirm Password</Label>
-            <Input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-            />
-            {errors.confirmPassword && (
-              <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-            )}
-          </FormGroup>
+          <Input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
+          />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            required
+          />
           <Button type="submit">Register</Button>
         </Form>
-        <ToggleText>
-          Already have an account?{' '}
-          <span onClick={onSwitchToLogin}>Login</span>
-        </ToggleText>
-      </RegisterPanel>
-    </Container>
+        
+        <SwitchText>
+          Already have an account?
+          <button type="button" onClick={onSwitchToLogin}>
+            Login
+          </button>
+        </SwitchText>
+      </Content>
+    </Modal>
   );
 }
 

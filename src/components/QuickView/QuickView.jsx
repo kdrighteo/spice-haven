@@ -258,24 +258,26 @@ function QuickViewContent({ product, isOpen, onClose, onProductChange }) {
   }, [isOpen, product]);
 
   const handleQuantityChange = (change) => {
-    if (!product) return;
     const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= (product.stock || 0)) {
+    if (product && newQuantity >= 1 && newQuantity <= (product.stock || 0)) {
       setQuantity(newQuantity);
     }
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
-    addToCart({ ...product, quantity });
-    onClose();
+    if (product) {
+      addToCart({ ...product, quantity });
+      onClose();
+    }
   };
 
   const handleWishlistToggle = () => {
-    if (!product || !user) {
+    if (!user) {
       alert('Please login to add items to your wishlist');
       return;
     }
+    if (!product) return;
+
     const isInWishlist = wishlist?.some(item => item.id === product.id);
     if (isInWishlist) {
       removeFromWishlist(product.id);

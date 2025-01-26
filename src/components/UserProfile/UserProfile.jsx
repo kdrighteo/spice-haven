@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useUserProfile } from '../../context/UserProfileContext';
 import { useAuth } from '../../context/AuthContext';
-import AddressBook from './AddressBook';
-import OrderHistory from './OrderHistory';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -11,89 +8,236 @@ const Container = styled.div`
   padding: 0 1rem;
 `;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-`;
-
 const Title = styled.h1`
-  font-size: 2rem;
   color: var(--dark);
-`;
-
-const TabsContainer = styled.div`
-  display: flex;
-  gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid var(--light-gray);
 `;
 
-const Tab = styled.button`
-  padding: 1rem 2rem;
-  border: none;
-  background: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  color: ${props => props.active ? 'var(--primary)' : 'var(--dark)'};
-  border-bottom: 2px solid ${props => props.active ? 'var(--primary)' : 'transparent'};
-  transition: all 0.3s ease;
+const ProfileCard = styled.div`
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+`;
 
-  &:hover {
-    color: var(--primary);
+const Section = styled.div`
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
-const Content = styled.div`
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+const SectionTitle = styled.h2`
+  color: var(--dark);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
 `;
 
-const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState('addresses');
-  const { user } = useAuth();
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Label = styled.label`
+  font-weight: 500;
+  color: var(--dark);
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+`;
+
+const Button = styled.button`
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: var(--primary-dark);
+  }
+
+  &:disabled {
+    background: var(--border);
+    cursor: not-allowed;
+  }
+`;
+
+const Message = styled.div`
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  background: ${props => props.success ? '#d4edda' : '#f8d7da'};
+  color: ${props => props.success ? '#155724' : '#721c24'};
+`;
+
+function UserProfile() {
+  const { user, updateProfile } = useAuth();
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      // Validate passwords match if changing password
+      if (formData.newPassword) {
+        if (formData.newPassword !== formData.confirmPassword) {
+          throw new Error('New passwords do not match');
+        }
+        if (!formData.currentPassword) {
+          throw new Error('Current password is required to change password');
+        }
+      }
+
+      // Call update profile function from auth context
+      await updateProfile({
+        name: formData.name,
+        email: formData.email,
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      });
+
+      setMessage({ text: 'Profile updated successfully', success: true });
+      
+      // Clear password fields
+      setFormData(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      }));
+    } catch (error) {
+      setMessage({ text: error.message, success: false });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!user) {
     return (
       <Container>
-        <p>Please log in to view your profile.</p>
+        <Message>Please log in to view your profile.</Message>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Header>
-        <Title>My Profile</Title>
-      </Header>
-
-      <TabsContainer>
-        <Tab
-          active={activeTab === 'addresses'}
-          onClick={() => setActiveTab('addresses')}
-        >
-          Address Book
-        </Tab>
-        <Tab
-          active={activeTab === 'orders'}
-          onClick={() => setActiveTab('orders')}
-        >
-          Order History
-        </Tab>
-      </TabsContainer>
-
-      <Content>
-        {activeTab === 'addresses' ? (
-          <AddressBook />
-        ) : (
-          <OrderHistory />
+      <Title>My Profile</Title>
+      
+      <ProfileCard>
+        {message && (
+          <Message success={message.success}>
+            {message.text}
+          </Message>
         )}
-      </Content>
+
+        <Form onSubmit={handleSubmit}>
+          <Section>
+            <SectionTitle>Personal Information</SectionTitle>
+            <FormGroup>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </FormGroup>
+          </Section>
+
+          <Section>
+            <SectionTitle>Change Password</SectionTitle>
+            <FormGroup>
+              <Label htmlFor="currentPassword">Current Password</Label>
+              <Input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="newPassword">New Password</Label>
+              <Input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+            </FormGroup>
+          </Section>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </Form>
+      </ProfileCard>
     </Container>
   );
-};
+}
 
 export default UserProfile; 

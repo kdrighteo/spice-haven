@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 const ErrorContainer = styled.div`
   padding: 2rem;
-  margin: 2rem;
-  background: var(--error-light);
-  border-radius: 8px;
   text-align: center;
+  background: var(--light);
+  border-radius: 8px;
+  margin: 1rem;
 `;
 
 const ErrorTitle = styled.h2`
@@ -15,12 +15,12 @@ const ErrorTitle = styled.h2`
 `;
 
 const ErrorMessage = styled.p`
-  color: var(--dark);
-  margin-bottom: 1rem;
+  color: var(--gray);
+  margin-bottom: 1.5rem;
 `;
 
 const RetryButton = styled.button`
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
   background: var(--primary);
   color: white;
   border: none;
@@ -55,7 +55,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <ErrorContainer>
-          <ErrorTitle>Something went wrong</ErrorTitle>
+          <ErrorTitle>Oops! Something went wrong</ErrorTitle>
           <ErrorMessage>
             {this.state.error?.message || 'An unexpected error occurred'}
           </ErrorMessage>
