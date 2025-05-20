@@ -1,0 +1,54 @@
+.category-filter {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-filter h3 {
+  color: #2c3e50;
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.category-button {
+  padding: 0.75rem 1rem;
+  background: none;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 1rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-button:hover {
+  background: #f8f9fa;
+  border-color: #ddd;
+}
+
+.category-button.active {
+  background: #e67e22;
+  color: white;
+  border-color: #e67e22;
+}
+
+@media (max-width: 768px) {
+  .category-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .category-button {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+  }
+} 
