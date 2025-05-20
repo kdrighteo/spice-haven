@@ -14,6 +14,7 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,6 +56,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess(false);
 
     if (!validateForm()) {
       return;
@@ -63,7 +65,11 @@ const Register = () => {
     setIsLoading(true);
     try {
       await register(formData.name, formData.email, formData.password);
-      navigate('/'); // Redirect to home page after successful registration
+      setSuccess(true);
+      // Wait for 2 seconds to show the success message before redirecting
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -80,6 +86,7 @@ const Register = () => {
         </div>
 
         {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">Registration successful! Redirecting...</div>}
 
         <form className="register-form" onSubmit={handleSubmit}>
           <div className="form-group">

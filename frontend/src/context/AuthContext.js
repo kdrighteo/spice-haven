@@ -1,10 +1,21 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [wishlist, setWishlist] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
   const login = async (email, password) => {
     // In a real app, this would make an API call
@@ -25,11 +36,13 @@ export function AuthProvider({ children }) {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // For demo purposes, accept any valid email/password combination
-    setUser({
+    const newUser = {
       id: 1,
       name: email.split('@')[0], // Use part of email as name for demo
       email: email
-    });
+    };
+    setUser(newUser);
+    return newUser;
   };
 
   const register = async (name, email, password) => {
@@ -51,11 +64,13 @@ export function AuthProvider({ children }) {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // For demo purposes, create a new user
-    setUser({
+    const newUser = {
       id: 1,
       name: name,
       email: email
-    });
+    };
+    setUser(newUser);
+    return newUser;
   };
 
   const logout = () => {

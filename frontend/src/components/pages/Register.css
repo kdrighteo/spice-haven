@@ -41,6 +41,16 @@
   text-align: center;
 }
 
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .register-form {
   display: flex;
   flex-direction: column;
@@ -126,7 +136,7 @@
 }
 
 .register-footer {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   text-align: center;
   color: #666;
 }
