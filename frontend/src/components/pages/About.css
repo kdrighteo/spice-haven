@@ -1,0 +1,135 @@
+.about-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.about-hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+              url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+}
+
+.about-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.about-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.about-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-section h2 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.about-section p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.commitment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.commitment-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.commitment-item h3 {
+  color: #e67e22;
+  margin-bottom: 1rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.member-image {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.member-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-member h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.member-role {
+  color: #e67e22;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.member-bio {
+  color: #666;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 1rem;
+  }
+
+  .about-hero {
+    padding: 3rem 1rem;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+
+  .about-section {
+    padding: 1.5rem;
+  }
+
+  .commitment-grid,
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+} 

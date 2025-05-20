@@ -1,66 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ onCartClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeLink, setActiveLink] = useState('/');
-  const { cart, setIsCartOpen } = useCart();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { cart } = useCart();
 
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    setActiveLink(location.pathname);
-  }, [location]);
-
-  const handleMenuClick = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleLinkClick = () => {
-    setIsMenuOpen(false);
-  };
-
-  const handleAuthClick = (type) => {
-    setIsMenuOpen(false);
-    if (type === 'login') {
-      navigate('/login');
-    } else if (type === 'register') {
-      navigate('/register');
-    }
-  };
-
-  const handleCartButtonClick = () => {
-    setIsMenuOpen(false);
-    setIsCartOpen(true);
-  };
-
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+    <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <Link to="/" className="logo" onClick={handleLinkClick}>
+          <Link to="/" className="logo">
             <span className="logo-text">Spice Haven</span>
           </Link>
         </div>
 
         <button 
           className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-          onClick={handleMenuClick}
-          aria-label="Toggle menu"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <span></span>
           <span></span>
@@ -68,50 +28,18 @@ const Navbar = () => {
         </button>
 
         <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          <Link 
-            to="/products" 
-            className={`nav-link ${activeLink === '/products' ? 'active' : ''}`}
-            onClick={handleLinkClick}
-          >
-            Products
-          </Link>
-          <Link 
-            to="/categories" 
-            className={`nav-link ${activeLink === '/categories' ? 'active' : ''}`}
-            onClick={handleLinkClick}
-          >
-            Categories
-          </Link>
-          <Link 
-            to="/about" 
-            className={`nav-link ${activeLink === '/about' ? 'active' : ''}`}
-            onClick={handleLinkClick}
-          >
-            About
-          </Link>
+          <Link to="/products" className="nav-link">Products</Link>
+          <Link to="/categories" className="nav-link">Categories</Link>
+          <Link to="/about" className="nav-link">About</Link>
           <div className="nav-buttons">
-            <button 
-              className="cart-button" 
-              onClick={handleCartButtonClick}
-              aria-label="Open cart"
-            >
+            <button className="cart-button" onClick={onCartClick}>
               🛒
               {cartItemsCount > 0 && (
                 <span className="cart-count">{cartItemsCount}</span>
               )}
             </button>
-            <button 
-              className="btn btn-outline"
-              onClick={() => handleAuthClick('login')}
-            >
-              Login
-            </button>
-            <button 
-              className="btn btn-primary"
-              onClick={() => handleAuthClick('register')}
-            >
-              Register
-            </button>
+            <Link to="/login" className="btn btn-outline">Login</Link>
+            <Link to="/register" className="btn btn-primary">Register</Link>
           </div>
         </div>
       </div>

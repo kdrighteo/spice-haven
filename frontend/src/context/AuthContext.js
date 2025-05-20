@@ -1,124 +1,105 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    // Check if user is logged in
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          // Verify token with backend
-          const response = await fetch('/api/auth/verify', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          } else {
-            localStorage.removeItem('token');
-          }
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        localStorage.removeItem('token'); // Clear token on verification failure
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []); // Empty dependency array means this effect runs only once on mount
+  const [wishlist, setWishlist] = useState([]);
 
   const login = async (email, password) => {
-    setIsLoading(true); // Assuming you have an isLoading state in AuthContext or manage it in AuthPage
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      localStorage.setItem('token', data.token);
-      setUser(data.user);
-      return { success: true };
-    } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: error.message };
-    } finally {
-       setIsLoading(false); // Assuming you have an isLoading state
+    // In a real app, this would make an API call
+    // For demo, we'll simulate a successful login with basic validation
+    if (!email || !password) {
+      throw new Error('Email and password are required');
     }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+
+    if (password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // For demo purposes, accept any valid email/password combination
+    setUser({
+      id: 1,
+      name: email.split('@')[0], // Use part of email as name for demo
+      email: email
+    });
   };
 
-  const register = async (userData) => {
-     setIsLoading(true); // Assuming you have an isLoading state
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      localStorage.setItem('token', data.token);
-      setUser(data.user);
-      return { success: true };
-    } catch (error) {
-      console.error('Registration error:', error);
-      return { success: false, error: error.message };
-    } finally {
-       setIsLoading(false); // Assuming you have an isLoading state
+  const register = async (name, email, password) => {
+    // In a real app, this would make an API call
+    // For demo, we'll simulate a successful registration with basic validation
+    if (!name || !email || !password) {
+      throw new Error('All fields are required');
     }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+
+    if (password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // For demo purposes, create a new user
+    setUser({
+      id: 1,
+      name: name,
+      email: email
+    });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
     setUser(null);
+    setWishlist([]);
   };
 
-  const value = {
-    user,
-    loading,
-    login,
-    register,
-    logout,
-    isLoading,
+  const addToWishlist = (product) => {
+    if (!user) {
+      throw new Error('Please login to add items to your wishlist');
+    }
+    setWishlist(prev => {
+      if (prev.some(item => item.id === product.id)) {
+        return prev;
+      }
+      return [...prev, product];
+    });
+  };
+
+  const removeFromWishlist = (productId) => {
+    setWishlist(prev => prev.filter(item => item.id !== productId));
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        wishlist,
+        addToWishlist,
+        removeFromWishlist
+      }}
+    >
+      {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+} 

@@ -34,14 +34,6 @@ const SearchBar = ({ onSearch }) => {
           </button>
         </div>
       </form>
-      {isFocused && searchTerm && (
-        <div className="search-suggestions">
-          <div className="suggestion-item">
-            <span>🔍</span>
-            <span>Search for "{searchTerm}"</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

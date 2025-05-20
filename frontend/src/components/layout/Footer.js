@@ -7,19 +7,13 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>Spice Haven</h3>
-          <p>Your premium destination for authentic spices from around the world.</p>
-          <div className="social-links">
-            <a href="#" aria-label="Facebook">📘</a>
-            <a href="#" aria-label="Instagram">📸</a>
-            <a href="#" aria-label="Twitter">🐦</a>
-          </div>
+          <h3>About Spice Haven</h3>
+          <p>Your trusted source for premium spices and herbs from around the world.</p>
         </div>
 
         <div className="footer-section">
-          <h4>Quick Links</h4>
+          <h3>Quick Links</h3>
           <ul>
-            <li><Link to="/">Home</Link></li>
             <li><Link to="/products">Products</Link></li>
             <li><Link to="/categories">Categories</Link></li>
             <li><Link to="/about">About Us</Link></li>
@@ -27,33 +21,20 @@ const Footer = () => {
         </div>
 
         <div className="footer-section">
-          <h4>Customer Service</h4>
+          <h3>Customer Service</h3>
           <ul>
-            <li><a href="/shipping">Shipping Info</a></li>
-            <li><a href="/returns">Returns</a></li>
-            <li><a href="/faq">FAQ</a></li>
-            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><Link to="/contact">Contact Us</Link></li>
+            <li><Link to="/shipping">Shipping Info</Link></li>
+            <li><Link to="/returns">Returns</Link></li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4>Newsletter</h4>
-          <p>Subscribe for updates and special offers</p>
+          <h3>Newsletter</h3>
           <form className="newsletter-form">
             <input type="email" placeholder="Enter your email" />
-            <button type="submit" className="btn btn-primary">Subscribe</button>
+            <button type="submit">Subscribe</button>
           </form>
-        </div>
-
-        <div className="footer-section">
-          <h3>Contact Us</h3>
-          <p>Email: info@spicehaven.com</p>
-          <p>Phone: (555) 123-4567</p>
-          <p>Address: 123 Spice Street, Flavor Town, ST 12345</p>
-        </div>
-
-        <div className="footer-section">
-          <h3>Follow Us</h3>
           <div className="social-links">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>

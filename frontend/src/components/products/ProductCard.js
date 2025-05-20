@@ -1,61 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCart } from '../../context/CartContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product, onClick }) => {
-  const { name, description, price, image, category, origin, averageRating } = product;
   const { addToCart } = useCart();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
-  const handleAddToCart = async (e) => {
-    e.stopPropagation();
-    setIsLoading(true);
-    try {
-      await addToCart(product);
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-    } finally {
-      setIsLoading(false);
-    }
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    addToCart(product);
   };
 
   return (
-    <div 
-      className={`product-card ${isHovered ? 'hovered' : ''}`}
-      onClick={() => onClick && onClick(product)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="product-card" onClick={onClick}>
       <div className="product-image">
-        <img src={image} alt={name} />
-        <div className="product-category">{category}</div>
-        <div className="quick-view">Quick View</div>
+        <img src={product.images[0]} alt={product.name} />
       </div>
-      <div className="product-content">
-        <h3 className="product-name">{name}</h3>
-        <p className="product-description">{description}</p>
+      <div className="product-info">
+        <h3>{product.name}</h3>
+        <p className="product-description">{product.description}</p>
         <div className="product-meta">
-          <span className="product-origin">Origin: {origin}</span>
-          <div className="product-rating">
-            {'⭐'.repeat(Math.round(averageRating))}
-            <span>({averageRating.toFixed(1)})</span>
-          </div>
+          <span className="product-price">${product.price.toFixed(2)}</span>
+          <span className="product-rating">★ {product.averageRating}</span>
         </div>
-        <div className="product-footer">
-          <span className="product-price">${price.toFixed(2)}</span>
-          <button 
-            className={`btn btn-primary ${isLoading ? 'loading' : ''}`} 
-            onClick={handleAddToCart}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span className="loading-spinner"></span>
-            ) : (
-              'Add to Cart'
-            )}
-          </button>
-        </div>
+        <button className="add-to-cart-button" onClick={handleAddToCart}>
+          Add to Cart
+        </button>
       </div>
     </div>
   );
