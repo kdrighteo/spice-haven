@@ -49,7 +49,7 @@ const Home = () => (
 
 function App() {
   return (
-    <Router basename="/spice-haven">
+    <Router basename="/spice-haven-1">
       <AuthProvider>
         <CartProvider>
           <ProductProvider>
