@@ -1,32 +1,38 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './CategoryFilter.css';
 
-const categories = [
-  { id: 'all', name: 'All Products' },
-  { id: 'ground', name: 'Ground Spices' },
-  { id: 'whole', name: 'Whole Spices' },
-  { id: 'blends', name: 'Spice Blends' },
-  { id: 'seeds', name: 'Seeds' },
-  { id: 'herbs', name: 'Herbs' }
-];
+const CategoryFilter = ({ categories = [], selectedCategory, onCategoryChange }) => {
+  if (!Array.isArray(categories)) {
+    console.warn('CategoryFilter: categories prop must be an array');
+    return null;
+  }
 
-const CategoryFilter = ({ selectedCategory, onCategoryChange }) => {
   return (
     <div className="category-filter">
-      <h3>Categories</h3>
-      <div className="category-list">
-        {categories.map(category => (
-          <button
-            key={category.id}
-            className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
-            onClick={() => onCategoryChange(category.id)}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
+      <button
+        className={`category-btn ${!selectedCategory ? 'active' : ''}`}
+        onClick={() => onCategoryChange(null)}
+      >
+        All
+      </button>
+      {categories.map((category) => (
+        <button
+          key={category}
+          className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+          onClick={() => onCategoryChange(category)}
+        >
+          {category}
+        </button>
+      ))}
     </div>
   );
+};
+
+CategoryFilter.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedCategory: PropTypes.string,
+  onCategoryChange: PropTypes.func.isRequired
 };
 
 export default CategoryFilter; 

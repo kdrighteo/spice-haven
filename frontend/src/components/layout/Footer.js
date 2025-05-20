@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
@@ -18,10 +19,10 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="/products">All Products</a></li>
-            <li><a href="/categories">Categories</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/products">Products</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/about">About Us</Link></li>
           </ul>
         </div>
 
@@ -42,6 +43,22 @@ const Footer = () => {
             <input type="email" placeholder="Enter your email" />
             <button type="submit" className="btn btn-primary">Subscribe</button>
           </form>
+        </div>
+
+        <div className="footer-section">
+          <h3>Contact Us</h3>
+          <p>Email: info@spicehaven.com</p>
+          <p>Phone: (555) 123-4567</p>
+          <p>Address: 123 Spice Street, Flavor Town, ST 12345</p>
+        </div>
+
+        <div className="footer-section">
+          <h3>Follow Us</h3>
+          <div className="social-links">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+          </div>
         </div>
       </div>
 

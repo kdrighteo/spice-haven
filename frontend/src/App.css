@@ -1,16 +1,53 @@
-.App {
+.app {
   min-height: 100vh;
-  background-color: #f8f9fa;
   display: flex;
   flex-direction: column;
 }
 
 .main-content {
   flex: 1;
+  padding-top: 80px; /* Height of navbar */
+  position: relative;
+}
+
+/* Modal and overlay z-index management */
+.modal-overlay,
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 1001;
+}
+
+.cart {
+  position: relative;
+  z-index: 1001;
+}
+
+/* Container styles */
+.container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  width: 100%;
+  padding: 0 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    padding-top: 60px;
+  }
+  
+  .container {
+    padding: 0 0.5rem;
+  }
 }
 
 .filters-section {
@@ -36,21 +73,6 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   padding: 1rem;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
-
-  .filters-section {
-    grid-template-columns: 1fr;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
 }
 
 .App-header {

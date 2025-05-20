@@ -1,25 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './Navbar.css';
 
-const Navbar = ({ onCartClick }) => {
+const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cart } = useCart();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeLink, setActiveLink] = useState('/');
+  const { cart, setIsCartOpen } = useCart();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location]);
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleAuthClick = (type) => {
+    setIsMenuOpen(false);
+    if (type === 'login') {
+      navigate('/login');
+    } else if (type === 'register') {
+      navigate('/register');
+    }
+  };
+
+  const handleCartButtonClick = () => {
+    setIsMenuOpen(false);
+    setIsCartOpen(true);
+  };
+
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-brand">
-          <a href="/" className="logo">
+          <Link to="/" className="logo" onClick={handleLinkClick}>
             <span className="logo-text">Spice Haven</span>
-          </a>
+          </Link>
         </div>
 
         <button 
           className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={handleMenuClick}
+          aria-label="Toggle menu"
         >
           <span></span>
           <span></span>
@@ -27,18 +68,50 @@ const Navbar = ({ onCartClick }) => {
         </button>
 
         <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          <a href="/products" className="nav-link">Products</a>
-          <a href="/categories" className="nav-link">Categories</a>
-          <a href="/about" className="nav-link">About</a>
+          <Link 
+            to="/products" 
+            className={`nav-link ${activeLink === '/products' ? 'active' : ''}`}
+            onClick={handleLinkClick}
+          >
+            Products
+          </Link>
+          <Link 
+            to="/categories" 
+            className={`nav-link ${activeLink === '/categories' ? 'active' : ''}`}
+            onClick={handleLinkClick}
+          >
+            Categories
+          </Link>
+          <Link 
+            to="/about" 
+            className={`nav-link ${activeLink === '/about' ? 'active' : ''}`}
+            onClick={handleLinkClick}
+          >
+            About
+          </Link>
           <div className="nav-buttons">
-            <button className="cart-button" onClick={onCartClick}>
+            <button 
+              className="cart-button" 
+              onClick={handleCartButtonClick}
+              aria-label="Open cart"
+            >
               🛒
               {cartItemsCount > 0 && (
                 <span className="cart-count">{cartItemsCount}</span>
               )}
             </button>
-            <a href="/login" className="btn btn-outline">Login</a>
-            <a href="/register" className="btn btn-primary">Register</a>
+            <button 
+              className="btn btn-outline"
+              onClick={() => handleAuthClick('login')}
+            >
+              Login
+            </button>
+            <button 
+              className="btn btn-primary"
+              onClick={() => handleAuthClick('register')}
+            >
+              Register
+            </button>
           </div>
         </div>
       </div>
