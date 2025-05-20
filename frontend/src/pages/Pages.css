@@ -442,4 +442,155 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
   }
+}
+
+/* Checkout Page Styles */
+.checkout-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color-light);
+  font-size: 1.2rem;
+}
+
+.checkout-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr; /* Forms take more space than summary */
+  gap: 3rem;
+}
+
+.order-summary {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+}
+
+.order-summary h2 {
+  color: var(--text-color);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border-color);
+  font-size: 1rem;
+  color: var(--text-color-light);
+}
+
+.order-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.order-item p {
+  margin: 0;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--text-color);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.shipping-payment-forms {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.shipping-payment-forms h2 {
+  color: var(--text-color);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+/* Styles for the forms within shipping-payment-forms */
+.shipping-payment-forms form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Space between form groups */
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+}
+
+.shipping-payment-forms .form-group {
+    margin-bottom: 0; /* Remove default form-group margin */
+}
+
+.shipping-payment-forms label {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.shipping-payment-forms input[type="text"],
+.shipping-payment-forms input[type="email"],
+.shipping-payment-forms input[type="password"] { /* Include other relevant input types */
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.shipping-payment-forms input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.1);
+}
+
+.shipping-payment-forms .btn-primary {
+  margin-top: 1.5rem;
+  width: 100%; /* Make the place order button full width in the form section */
+}
+
+@media (max-width: 768px) {
+  .checkout-content {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    gap: 2rem;
+  }
+
+  .order-summary,
+  .shipping-payment-forms {
+    padding: 1.5rem;
+  }
+
+  .order-summary h2,
+  .shipping-payment-forms h2 {
+    font-size: 1.5rem;
+  }
+
+  .order-total {
+    font-size: 1.2rem;
+  }
+
+  .shipping-payment-forms form {
+      padding: 1rem;
+  }
+
+  .shipping-payment-forms input {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+  }
 } 

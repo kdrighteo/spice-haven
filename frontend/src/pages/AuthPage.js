@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Pages.css';
 
 const AuthPage = ({ type }) => {
   const navigate = useNavigate();
+  const { login, register, isLoading } = useAuth();
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -11,7 +14,6 @@ const AuthPage = ({ type }) => {
     name: ''
   });
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,23 +25,31 @@ const AuthPage = ({ type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setIsLoading(true);
 
     try {
       if (type === 'register' && formData.password !== formData.confirmPassword) {
         throw new Error('Passwords do not match');
       }
 
-      // Here you would typically make an API call to your backend
-      // For now, we'll simulate a successful authentication
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirect to home page after successful authentication
-      navigate('/');
+      let result;
+      if (type === 'login') {
+        result = await login(formData.email, formData.password);
+      } else if (type === 'register') {
+        result = await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        });
+      }
+
+      if (result && result.success) {
+        navigate('/');
+      } else {
+        setError(result.error || 'Authentication failed.');
+      }
+
     } catch (err) {
       setError(err.message);
-    } finally {
-      setIsLoading(false);
     }
   };
 

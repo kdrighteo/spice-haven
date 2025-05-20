@@ -9,6 +9,7 @@ import ProductsPage from './pages/ProductsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import AuthPage from './pages/AuthPage';
+import CheckoutPage from './pages/CheckoutPage';
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/login" element={<AuthPage type="login" />} />
                 <Route path="/register" element={<AuthPage type="register" />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
               </Routes>
             </main>
             <Footer />

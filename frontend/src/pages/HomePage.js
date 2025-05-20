@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '../components/home/Hero';
 import SearchBar from '../components/products/SearchBar';
 import CategoryFilter from '../components/products/CategoryFilter';
@@ -9,6 +9,9 @@ import { useCart } from '../context/CartContext';
 import './Pages.css';
 
 const HomePage = () => {
+  const [products, setProducts] = useState([]); // State for fetched products
+  const [loading, setLoading] = useState(true); // State for loading status
+  const [error, setError] = useState(null); // State for error handling
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -16,56 +19,25 @@ const HomePage = () => {
 
   const categories = ["Hot Sauces", "Spice Blends", "Whole Spices"];
 
-  const mockProducts = [
-    {
-      id: 1,
-      name: "Ghost Pepper Sauce",
-      description: "Extremely hot sauce made from ghost peppers",
-      price: 12.99,
-      image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba",
-      category: "Hot Sauces",
-      origin: "India",
-      flavorProfile: "Extremely Hot",
-      heatLevel: 5,
-      averageRating: 4.5
-    },
-    {
-      id: 2,
-      name: "Habanero Hot Sauce",
-      description: "Spicy sauce with a fruity habanero flavor",
-      price: 9.99,
-      image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba",
-      category: "Hot Sauces",
-      origin: "Mexico",
-      flavorProfile: "Hot",
-      heatLevel: 4,
-      averageRating: 4.2
-    },
-    {
-      id: 3,
-      name: "Mediterranean Blend",
-      description: "Aromatic blend of Mediterranean herbs and spices",
-      price: 8.99,
-      image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba",
-      category: "Spice Blends",
-      origin: "Greece",
-      flavorProfile: "Herbal",
-      heatLevel: 1,
-      averageRating: 4.8
-    },
-    {
-      id: 4,
-      name: "Black Peppercorns",
-      description: "Whole black peppercorns for grinding",
-      price: 6.99,
-      image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba",
-      category: "Whole Spices",
-      origin: "India",
-      flavorProfile: "Peppery",
-      heatLevel: 2,
-      averageRating: 4.6
-    }
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products'); // Fetch products from backend
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProducts(data); // Set fetched products
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('Failed to fetch products. Please try again later.'); // Set error state
+      } finally {
+        setLoading(false); // Set loading to false
+      }
+    };
+
+    fetchProducts(); // Call the fetch function when the component mounts
+  }, []); // Empty dependency array means this effect runs only once on mount
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -79,7 +51,7 @@ const HomePage = () => {
     setSelectedProduct(product);
   };
 
-  const filteredProducts = mockProducts.filter(product => {
+  const filteredProducts = products.filter(product => {
     const matchesSearch = searchQuery === '' || 
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -88,6 +60,14 @@ const HomePage = () => {
     
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return <div className="home-page">Loading products...</div>; // Loading state
+  }
+
+  if (error) {
+    return <div className="home-page error-message">{error}</div>; // Error state
+  }
 
   return (
     <div className="home-page">

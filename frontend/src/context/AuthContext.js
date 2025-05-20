@@ -5,6 +5,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -28,15 +29,17 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        localStorage.removeItem('token'); // Clear token on verification failure
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, []); // Empty dependency array means this effect runs only once on mount
 
   const login = async (email, password) => {
+    setIsLoading(true); // Assuming you have an isLoading state in AuthContext or manage it in AuthPage
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -46,21 +49,25 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password })
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error(data.message || 'Login failed');
       }
 
-      const data = await response.json();
       localStorage.setItem('token', data.token);
       setUser(data.user);
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: error.message };
+    } finally {
+       setIsLoading(false); // Assuming you have an isLoading state
     }
   };
 
   const register = async (userData) => {
+     setIsLoading(true); // Assuming you have an isLoading state
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -70,17 +77,20 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(userData)
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Registration failed');
+        throw new Error(data.message || 'Registration failed');
       }
 
-      const data = await response.json();
       localStorage.setItem('token', data.token);
       setUser(data.user);
       return { success: true };
     } catch (error) {
       console.error('Registration error:', error);
       return { success: false, error: error.message };
+    } finally {
+       setIsLoading(false); // Assuming you have an isLoading state
     }
   };
 
@@ -94,7 +104,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     register,
-    logout
+    logout,
+    isLoading,
   };
 
   return (

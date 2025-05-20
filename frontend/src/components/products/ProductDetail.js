@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import './ProductDetail.css';
 
 const ProductDetail = ({ product, onClose }) => {
   const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+
   const {
     name,
     description,
@@ -13,7 +15,9 @@ const ProductDetail = ({ product, onClose }) => {
     origin,
     flavorProfile,
     heatLevel,
-    averageRating
+    averageRating,
+    stock,
+    weight
   } = product;
 
   useEffect(() => {
@@ -34,13 +38,17 @@ const ProductDetail = ({ product, onClose }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    addToCart(product);
+    addToCart(product, quantity);
   };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const handleQuantityChange = (amount) => {
+    setQuantity(prevQuantity => Math.max(1, prevQuantity + amount));
   };
 
   return (
@@ -75,11 +83,32 @@ const ProductDetail = ({ product, onClose }) => {
                 <span className="label">Rating:</span>
                 <span className="value">{'⭐'.repeat(Math.round(averageRating))} ({averageRating.toFixed(1)})</span>
               </div>
+              {stock !== undefined && (
+                <div className="meta-item">
+                  <span className="label">Stock:</span>
+                  <span className="value">{stock > 0 ? stock : 'Out of Stock'}</span>
+                </div>
+              )}
+              {weight && weight.value !== undefined && weight.unit && (
+                <div className="meta-item">
+                  <span className="label">Weight:</span>
+                  <span className="value">{weight.value}{weight.unit}</span>
+                </div>
+              )}
             </div>
             <div className="product-actions">
               <span className="price">${price.toFixed(2)}</span>
-              <button className="add-to-cart-btn" onClick={handleAddToCart}>
-                Add to Cart
+              <div className="quantity-selector">
+                <button onClick={() => handleQuantityChange(-1)} disabled={quantity === 1}>-</button>
+                <span>{quantity}</span>
+                <button onClick={() => handleQuantityChange(1)}>+</button>
+              </div>
+              <button 
+                className="add-to-cart-btn"
+                onClick={handleAddToCart}
+                disabled={stock !== undefined && stock <= 0}
+              >
+                {stock !== undefined && stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
             </div>
           </div>
